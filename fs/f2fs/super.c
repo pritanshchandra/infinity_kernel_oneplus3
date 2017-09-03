@@ -1297,7 +1297,6 @@ static loff_t max_file_blocks(void)
 
 	return result;
 }
-
 static int __f2fs_commit_super(struct buffer_head *bh,
 			struct f2fs_super_block *super)
 {

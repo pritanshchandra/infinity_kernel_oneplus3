@@ -29,6 +29,7 @@ static struct sk_buff *udp6_ufo_fragment(struct sk_buff *skb,
 	u8 frag_hdr_sz = sizeof(struct frag_hdr);
 	__wsum csum;
 	int tnl_hlen;
+	int err;
 
 	mss = skb_shinfo(skb)->gso_size;
 	if (unlikely(skb->len <= mss))
@@ -81,7 +82,7 @@ static struct sk_buff *udp6_ufo_fragment(struct sk_buff *skb,
 		if (uh->check == 0)
 			uh->check = CSUM_MANGLED_0;
 
-		skb->ip_summed = CHECKSUM_NONE;
+		skb->ip_summed = CHECKSUM_UNNECESSARY;
 
 		/* Check if there is enough headroom to insert fragment header. */
 		tnl_hlen = skb_tnl_header_len(skb);
@@ -93,6 +94,7 @@ static struct sk_buff *udp6_ufo_fragment(struct sk_buff *skb,
 		/* Find the unfragmentable header and shift it left by frag_hdr_sz
 		 * bytes to insert fragment header.
 		 */
+
 		unfrag_ip6hlen = ip6_find_1stfragopt(skb, &prevhdr);
 		if (unfrag_ip6hlen < 0)
 			return ERR_PTR(unfrag_ip6hlen);
